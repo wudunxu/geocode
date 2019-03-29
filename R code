@@ -1,0 +1,43 @@
+install.packages("jsonlite")
+install.packages("httr")
+install.packages("readxl")
+
+library(jsonlite)
+library(httr)
+library(readxl)
+
+
+## 读取excel，
+## dataset <- read_excel(NULL)
+
+## 以下部分可以嵌入循环结构
+
+geotype1<- "wgs84"
+geotype2<- "gcj02"
+geotype3<- "bd09"
+
+
+bdc<- paste("src_type=",geotype3,"&src_coordinate=",toString(114.1861251),",",toString(22.29358599),sep = "", collapse = NULL)
+
+req <- httr::POST("https://tool.lu/coordinate/ajax.html",
+                  httr::add_headers(
+                    "Content-Type" = "application/x-www-form-urlencoded;charset=UTF-8"
+                  ),
+                  body = bdc
+);
+
+json <- httr::content(req, as = "text")
+
+output <- fromJSON(json)
+
+wgs84_lat<- output$result$wgs84$lat
+wgs84_lng<- output$result$wgs84$lng
+
+gc02_lat<- output$result$gcj02$lat
+gc02_lng<- output$result$gcj02$lng
+
+bd09_lat<- output$result$bd09$lat
+bd09_lng<- output$result$bd09$lng
+
+## 以上部分可以嵌入循环结构
+
